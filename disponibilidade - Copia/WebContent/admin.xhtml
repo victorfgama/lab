@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Bem Vindo Admin</title>
+		<link rel="stylesheet" type="text/css" href="css\design.css" />
+</h:head>
+
+<h:body>
+	<div id="professor" class="formulario">
+		<h:form id="form" enctype="multipart/form-data">
+			<p:growl id="msgs" showDetail="true" />
+
+			<h:outputLabel>
+				<div class="bordo tam-bordo">
+				<h1 class="letrabranca">Busca de Professor</h1>
+				</div>
+			</h:outputLabel>
+
+			<!--  Campos -->
+			<h:panelGrid id="grid" columns="3" cellpadding="5">
+
+
+				<p:outputLabel for="nome" value="Nome: " />
+				<p:inputText id="nome" value="#{professorMB.objAtual.nome}">
+					<f:validateLength maximum="100" />
+					<f:validateRegex
+						pattern="^([a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ 0-9 \s\.]+|[ 0-9 ]+[ a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ])" />
+				</p:inputText>
+				<p:message for="nome" />
+
+
+			</h:panelGrid>
+
+			<!-- Botoes -->
+
+
+
+			<p:commandButton actionListener="#{professorMB.pesquisar()}"
+				value="Pesquisar" update="growl" icon="ui-icon-search"
+				id="pesquisar" ajax="updade grid" name="Pesquisar">
+			</p:commandButton>
+			
+			<p:commandButton actionListener="#{loginMB.logout()}"
+				value="Logout" update="growl" 
+				id="logout" ajax="updade grid" name="Logout">
+			</p:commandButton>
+			
+
+			<h:panelGrid id="grid2"
+				rendered="#{professorMB.listaPesquisa.size() > 0}">
+
+				<!-- Lista de pesquisados -->
+				<p:dataTable id="tabl" var="professor" value="#{professorMB.listaPesquisa}"
+					editable="true">
+
+					<f:facet name="header">
+                     Professores Pesquisados
+                    </f:facet>
+
+					<!-- Controle de tupla  -->
+					<p:ajax event="rowEdit" listener="#{professorMB.onRowEdit}"
+						update=":form:msgs" />
+					<p:ajax event="rowEditCancel" listener="#{professorMB.onRowCancel}"
+						update=":form:msgs" />
+
+
+					<p:column style="width:35px" headerText="Alt">
+						<p:rowEditor update="tabl" />
+					</p:column>
+
+					<p:column headerText="Exclui">
+						<p:commandButton actionListener="#{professorMB.exclui(professor)}"
+							value="Exclui" update="form" size="10"
+							id="Excluir">
+						</p:commandButton>
+					</p:column>
+					
+					<p:column headerText="Id">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.id}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="modelInput" value="#{professor.id}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Email">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.email}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.email}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Senha" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.senha}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:outputText   value="#{professor.senha}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Nome">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.nome}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.nome}" required="true"
+									style="width:100%">
+									<f:validateRegex
+										pattern="^([a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ 0-9 \s\.]+|[ 0-9 ]+[ a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Cep">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.cep}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputMask required="true" value="#{professor.cep}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Endereco">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.endereco}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText required="true" value="#{professor.endereco}"
+									style="width:100%">
+									<f:validateRegex
+										pattern="^([a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ 0-9 \s\.]+|[ 0-9 ]+[ a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Bairro">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.bairro}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText required="true" value="#{professor.bairro}"
+									style="width:100%">
+									<f:validateRegex
+										pattern="^([a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ 0-9 \s\.]+|[ 0-9 ]+[ a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					
+					<p:column headerText="tel">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.telefone}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputMask required="true"
+									value="#{professor.telefone}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="cel">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.celular}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputMask  required="true"
+									value="#{professor.celular}" 
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="ADS">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ads}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.ads}" 
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="COMEX">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.comex}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.comex}"
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="LOG">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.logi}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.logi}" 
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="POL">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.pol}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.pol}" 
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="G.EMP">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.gemp}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.gemp}" 
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Carga horaria">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.carga}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.carga}" required="true"
+									style="width:100%">
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<!-- Lista de disponibilidade -->
+					
+					<p:column headerText="Seg_manha_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_manha_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ter_manha_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_manha_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qua_manha_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_manha_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qui_manha_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_manha_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sex_manha_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_manha_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sab_manha_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sab_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sab_manha_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Seg_manha_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_manha_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ter_manha_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_manha_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qua_manha_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_manha_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qui_manha_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_manha_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sex_manha_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_manha_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sab_manha_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sab_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sab_manha_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Seg_manha_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_manha_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ter_manha_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_manha_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qua_manha_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_manha_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qui_manha_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_manha_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sex_manha_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_manha_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Seg_tarde_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_tarde_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ter_tarde_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_tarde_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qua_tarde_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_tarde_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qui_tarde_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_tarde_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sex_tarde_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_tarde_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Seg_tarde_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_tarde_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ter_tarde_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_tarde_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qua_tarde_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_tarde_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qui_tarde_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_tarde_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sex_tarde_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_tarde_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Seg_tarde_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_tarde_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ter_tarde_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_tarde_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qua_tarde_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_tarde_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qui_tarde_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_tarde_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sex_tarde_3" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_tarde_3}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Seg_noite_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_noite_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ter_noite_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_noite_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qua_noite_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_noite_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qui_noite_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_noite_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sex_noite_1" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_noite_1}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Seg_noite_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_noite_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Ter_noite_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_noite_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qua_noite_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_noite_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Qui_noite_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_noite_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Sex_noite_2" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_noite_2}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+				</p:dataTable>
+			</h:panelGrid>
+		</h:form>
+	</div>
+
+</h:body>
+</html>

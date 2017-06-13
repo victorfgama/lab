@@ -1,0 +1,919 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Bem Vindo Professor</title>
+		<link rel="stylesheet" type="text/css" href="css\design.css" />
+</h:head>
+
+<h:body>
+	<div id="professor" class="formulario">
+		<h:form id="form" enctype="multipart/form-data">
+			<p:growl id="msgs" showDetail="true" />
+
+			<h:outputLabel>
+				<div class="bordo tam-bordo">
+				<h1 class="letrabranca">Dados do Professor</h1>
+				</div>
+			</h:outputLabel>
+
+			<p:commandButton actionListener="#{professorMB.pesquisarEmail()}"
+				value="Mostrar Dados" update="growl" icon="ui-icon-search"
+				id="dados" ajax="updade grid" name="Mostrar Dados">
+			</p:commandButton>
+			
+			<p:commandButton actionListener="#{loginMB.logout()}"
+				value="Logout" update="growl" 
+				id="logout" ajax="updade grid" name="Logout">
+			</p:commandButton>
+			
+
+			<h:panelGrid id="grid2"
+				rendered="#{professorMB.listaPesquisa.size() > 0}">
+
+				<!-- Lista de pesquisados -->
+				<p:dataTable id="tabl" var="professor" value="#{professorMB.listaPesquisa}"
+					editable="true" scrollable="true">
+
+					<!-- Controle de tupla  -->
+					<p:ajax event="rowEdit" listener="#{professorMB.onRowEdit}"
+						update=":form:msgs" />
+					<p:ajax event="rowEditCancel" listener="#{professorMB.onRowCancel}"
+						update=":form:msgs" />
+
+
+					<p:column style="width:35px" headerText="Alt">
+						<p:rowEditor update="tabl" />
+					</p:column>
+					
+					<p:column style="width:100px" headerText="Imprimir">
+						<p:commandButton actionListener="#{relatorioMB.geraRelatorio()}"
+							value="Imprimir" update="form" size="10"
+							id="Imprimir">
+						</p:commandButton>
+					</p:column>
+
+					<p:column style="width:85px" headerText="Exclui">
+						<p:commandButton actionListener="#{professorMB.exclui(professor)}"
+							value="Exclui" update="form" size="10"
+							id="Excluir">
+						</p:commandButton>
+					</p:column>
+					
+					<p:column style="width:35px" headerText="Id">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.id}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="modelInput" value="#{professor.id}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:120px" headerText="Email">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.email}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.email}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column headerText="Senha" visible = "false">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.senha}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:outputText   value="#{professor.senha}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:120px" headerText="Nome">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.nome}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.nome}" required="true"
+									style="width:100%">
+									<f:validateRegex
+										pattern="^([a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ 0-9 \s\.]+|[ 0-9 ]+[ a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column style="width:85px" headerText="Cep">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.cep}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputMask required="true" value="#{professor.cep}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column style="width:120px" headerText="Endereco">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.endereco}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText required="true" value="#{professor.endereco}"
+									style="width:100%">
+									<f:validateRegex
+										pattern="^([a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ 0-9 \s\.]+|[ 0-9 ]+[ a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:120px" headerText="Bairro">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.bairro}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText required="true" value="#{professor.bairro}"
+									style="width:100%">
+									<f:validateRegex
+										pattern="^([a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ 0-9 \s\.]+|[ 0-9 ]+[ a-zA-Z çÇáàãâÁÀÃÂÕÔÓÒõôóòéèêÉÈÊÍÌÎíìîúùûÙÚÛ])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					
+					<p:column style="width:120px" headerText="Telefone">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.telefone}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputMask required="true"
+									value="#{professor.telefone}"
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:130px" headerText="Celular">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.celular}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputMask  required="true"
+									value="#{professor.celular}" 
+									style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:45px" headerText="ADS">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ads}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.ads}" 
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="COMEX">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.comex}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.comex}"
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:45px" headerText="LOG">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.logi}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.logi}" 
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:45px" headerText="POL">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.pol}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.pol}" 
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:50px" headerText="G.EMP">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.gemp}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.gemp}" 
+									style="width:100%">
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:50px" headerText="Carga horaria">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.carga}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{professor.carga}" required="true"
+									style="width:100%">
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<!-- Lista de disponibilidade -->
+					
+					<p:column style="width:60px" headerText="Seg/M/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_manha_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Ter/M/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_manha_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qua/M/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_manha_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qui/M/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_manha_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sex/M/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_manha_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sab/M/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sab_manha_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sab_manha_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Seg/M/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_manha_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Ter/M/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_manha_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qua/M/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_manha_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qui/M/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_manha_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sex/M/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_manha_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sab/M/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sab_manha_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sab_manha_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Seg/M/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_manha_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Ter/M/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_manha_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qua/M/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_manha_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qui/M/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_manha_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sex/M/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_manha_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_manha_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Seg/T/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_tarde_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Ter/T/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_tarde_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qua/T/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_tarde_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qui/T/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_tarde_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sex/T/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_tarde_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_tarde_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Seg/T/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_tarde_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Ter/T/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_tarde_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qua/T/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_tarde_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qui/T/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_tarde_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sex/T/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_tarde_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_tarde_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Seg/T/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_tarde_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Ter/T/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_tarde_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qua/T/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_tarde_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qui/T/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_tarde_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sex/T/3">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_tarde_3}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_tarde_3}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Seg/N/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_noite_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Ter/N/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_noite_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qua/N/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_noite_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qui/N/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_noite_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sex/N/1">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_noite_1}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_noite_1}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Seg/N/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.seg_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.seg_noite_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Ter/N/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.ter_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.ter_noite_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qua/N/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qua_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qua_noite_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Qui/N/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.qui_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.qui_noite_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:60px" headerText="Sex/N/2">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{professor.sex_noite_2}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText  value="#{professor.sex_noite_2}"
+									style="width:100%" >
+									<f:validateLength maximum="1" />
+									<f:validateRegex pattern="^([xX])" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+				</p:dataTable>
+			</h:panelGrid>
+			<p:outputLabel><div class="font18" style="font-weight:bold">*Marque com um X os horários disponíveis, e matérias ministradas</div></p:outputLabel>
+			<p:outputLabel><div class="font18" style="font-weight:bold">**Quando a disponibilidade do professor implicar na mudança de horário de alguma disciplina 
+			já ministrada pelo mesmo essa mudança somente será realizada se outros professores puderem realizar a troca</div></p:outputLabel>
+			<p:outputLabel><div class="font18" style="font-weight:bold">***As colunas de Disponibilidade são denominadas "dia da semana"/"periodo"/"e bloco"</div></p:outputLabel>
+			
+		</h:form>
+	</div>
+
+</h:body>
+</html>
